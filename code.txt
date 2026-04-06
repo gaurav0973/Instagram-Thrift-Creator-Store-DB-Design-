@@ -1,0 +1,62 @@
+notation chen
+colorMode bold
+typeface mono
+//Main thingd jo application me cahiye 
+// products, customers, oders, order_items paymments, shippings
+
+
+customers[icon: users, color: green, colorMode: bold] {
+  customer_id serial pk
+  name string
+  ig_handle string
+  shipping_address string
+}
+
+products[icon: box, color: green, colorMode: bold] {
+  product_id serial pk
+  name string
+  description string
+  price float
+  product_type enum ["thrifted", "handmade"]
+  stock_quantity int
+  condition string
+  size string
+}
+
+orders[icon: shopping-cart, color: green, colorMode: bold] {
+  order_id serial pk
+  customer_id int fk
+  order_date datetime
+  total_amount float
+  status string
+}
+
+order_items[icon : list, color: green, colorMode: bold] {
+  order_item_id serial pk
+  order_id int fk
+  product_id int fk
+  quantity int
+  price_at_time float
+}
+
+payments[icon: credit-card, color: green, colorMode: bold] {
+  payment_id serial pk
+  order_id int fk
+  payment_status enum ["pending", "done"]
+  method enum ["upi", "card"]
+}
+
+shippings[icon: car, color: green, colorMode: bold] {
+  shipping_id serial pk
+  order_id int fk
+  tracking_number string
+  status enum ["pending", "shipped", "delivered"]
+}
+
+customers.customer_id < orders.customer_id: [color: green]
+
+orders.order_id < order_items.order_id: [color: green]
+products.product_id < order_items.product_id: [color: green]
+
+orders.order_id - payments.order_id: [color: green]
+orders.order_id - shippings.order_id: [color: green]
