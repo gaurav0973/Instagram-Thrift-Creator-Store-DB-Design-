@@ -1,0 +1,124 @@
+notation chen
+colorMode bold
+typeface mono
+
+users[icon: user, color: Green] {
+  user_id serial pk
+  name string
+  email string unique
+  role enum ["trainer", "client"]
+}
+
+trainers[icon: activity, color: Green] {
+  trainer_id int pk fk  
+  specialization string
+  experience int
+}
+
+clients[icon: users, color: Green] {
+  client_id int pk fk
+  age int
+  gender string
+  fitness_goal string
+}
+
+plans[icon: package, color: Green, colorMode: bold] {
+  plan_id serial pk
+  trainer_id int fk
+  name string
+  description string
+  price float
+  duration_days int
+  type enum ["consultation", "coaching"]
+}
+
+
+subscriptions[icon: repeat, color: green] {
+  subscription_id serial pk
+  client_id int fk
+  plan_id int fk
+  trainer_id int fk 
+  start_date datetime
+  end_date datetime
+  status enum ["active", "completed", "cancelled"]
+}
+
+
+sessions[icon: calendar, color: Green] {
+  session_id serial pk
+  trainer_id int fk
+  client_id int fk
+  subscription_id int fk nullable
+  scheduled_at datetime
+  type enum ["consultation", "live_session"]
+  status enum ["scheduled", "completed", "cancelled"]
+}
+
+
+checkins[icon: clipboard, color: Green] {
+  checkin_id serial pk
+  client_id int fk
+  subscription_id int fk
+  date datetime
+  notes string
+}
+
+
+progress_logs[icon: trending-up, color: Green] {
+  progress_id serial pk
+  checkin_id int fk  
+  weight float
+  body_fat float
+  measurements string
+}
+
+
+trainer_notes[icon: edit, color: Green] {
+  note_id serial pk
+  trainer_id int fk
+  entity_type enum ["checkin", "session"]  
+  entity_id int
+  content string
+}
+
+
+payments[icon: credit-card, color: Green] {
+  payment_id serial pk
+  subscription_id int fk
+  amount float
+  method enum ["upi", "card"]
+  status enum ["pending", "completed"]
+  transaction_type enum ["payment", "refund"]   
+  paid_at datetime
+}
+
+
+// users → roles
+users.user_id - trainers.trainer_id: [color: green]
+users.user_id - clients.client_id: [color: green]
+
+// trainer → plans
+trainers.trainer_id < plans.trainer_id: [color: green]
+
+// subscriptions
+clients.client_id < subscriptions.client_id: [color: green]
+plans.plan_id < subscriptions.plan_id: [color: green]
+trainers.trainer_id < subscriptions.trainer_id: [color: green]
+
+// sessions
+trainers.trainer_id < sessions.trainer_id: [color: green]
+clients.client_id < sessions.client_id: [color: green]
+subscriptions.subscription_id < sessions.subscription_id: [color: green]
+
+// check-ins
+clients.client_id < checkins.client_id: [color: green]
+subscriptions.subscription_id < checkins.subscription_id: [color: green]
+
+// progress
+checkins.checkin_id < progress_logs.checkin_id: [color: green]
+
+// trainer notes
+trainers.trainer_id < trainer_notes.trainer_id: [color: green]
+
+// payments
+subscriptions.subscription_id < payments.subscription_id: [color: green]
