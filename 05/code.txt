@@ -1,0 +1,94 @@
+building [icon: building, color: green]{
+  building_id string pk
+  name string
+  location string
+}
+
+floor [icon: layers, color: green]{
+  floor_id string pk
+  building_id string
+  floor_number int
+}
+
+elevator_shaft [icon: columns, color: green]{
+  shaft_id string pk
+  building_id string
+  shaft_number int
+}
+
+elevator [icon: electron, color: green]{
+  elevator_id string pk
+  building_id string
+  shaft_id string
+  capacity int
+  is_active boolean
+}
+
+elevator_floor_map [icon: shuffle, color: green]{
+  id string pk
+  elevator_id string
+  floor_id string
+}
+
+floor_request [icon: arrow-up-circle, color: green]{
+  request_id string pk
+  source_floor_id string
+  destination_floor_id string
+  request_time timestamp
+  status enum(pending, assigned, completed)
+}
+
+ride_assignment [icon: link, color: green]{
+  assignment_id string pk
+  request_id string
+  elevator_id string
+  assigned_time timestamp
+}
+
+ride_log [icon: activity, color: Green]{
+  ride_id string pk
+  elevator_id string
+  request_id string
+  start_time timestamp
+  end_time timestamp
+  ride_status enum(started, completed, cancelled)
+}
+
+elevator_status [icon: signal, color: green]{
+  status_id string pk
+  elevator_id string
+  status enum(idle, moving, maintenance)
+  recorded_at timestamp
+}
+
+maintenance_log [icon: tool, color: green]{
+  maintenance_id string pk
+  elevator_id string
+  start_time timestamp
+  end_time timestamp
+  description string
+}
+
+
+floor.building_id > building.building_id: [color: green]
+
+elevator_shaft.building_id > building.building_id: [color: green]
+
+elevator.building_id > building.building_id: [color: green]
+elevator.shaft_id > elevator_shaft.shaft_id: [color: green]
+
+elevator_floor_map.elevator_id > elevator.elevator_id: [color: green]
+elevator_floor_map.floor_id > floor.floor_id: [color: green]
+
+floor_request.source_floor_id > floor.floor_id: [color: green]
+floor_request.destination_floor_id > floor.floor_id: [color: green]
+
+ride_assignment.request_id > floor_request.request_id: [color: green]
+ride_assignment.elevator_id > elevator.elevator_id: [color: green]
+
+ride_log.elevator_id > elevator.elevator_id: [color: green]
+ride_log.request_id > floor_request.request_id: [color: green]
+
+elevator_status.elevator_id > elevator.elevator_id: [color: green]
+
+maintenance_log.elevator_id > elevator.elevator_id: [color: green]
