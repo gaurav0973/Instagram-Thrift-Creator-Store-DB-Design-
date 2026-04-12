@@ -1,0 +1,64 @@
+owners[color: yellow]{
+  owner_id serial pk
+  team_id int fk
+  name string 
+  worth decimal
+  type enum("individual", "company")
+  ownership_percentage decimal
+}
+
+teams[color: Green] {
+  team_id serail pk
+  name string 
+  coach_name string 
+  captiain_id int fk
+  city string 
+  home_ground string
+  founded_year int
+}
+
+
+players[color: yellow]{
+  player_id serial pk
+  name string 
+  country string 
+  role enum("batsman", "bowler", "allrounder", "wicketkeeper")
+  base_price decimal
+  match_played int
+  runs int 
+  wickets  int 
+  strike_rate int 
+  centuries  int 
+  half_centuries int 
+ 
+  team_id int fk 
+  seasom_year int 
+}
+
+
+
+sponsors[color: yellow]{
+  sponsor_id serial pk
+  name string 
+  industry string 
+  budget string 
+  sponsor_type enum("title", "jersey", "official")
+  team_id int fk
+  region string
+  rights_type enum("exclusive", "shared")
+  contract_start datatime 
+  contract_end datetime 
+}
+
+broadcasters[icon:globe, color:red]{
+  broadcaster_id serial pk
+  name string 
+  platform enum("TV", "OTT")
+  contract_start datatime 
+  contract_end datetime 
+}
+
+owners.team_id - teams.team_id
+teams.team_id < players.team_id
+sponsors.team_id > teams.team_id
+teams.captiain_id - players.player_id
